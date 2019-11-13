@@ -12,7 +12,7 @@ The input data is a table, in which the first 14 columns defines a culture condi
 
 A culutre condition is defined by a binary vecotr, representing the presence of 10 biocides and 4 antibiotics: ```Chlorexidine, Phenol, H2O2, Isopropanol, Bezalkonium_chloride, Ethanol, Glutaraldehyde, Percetic_acid, Sodium_hypochlorite, Povidone_iodine, Kanamycin, Rifampicin, Norfloxacin, Ampicillin```
 
-### Running
+### How to run
 * Step1: generate a file that include many configurations to run OED.
   ```
   cd generate_setting
@@ -52,4 +52,5 @@ In this dir, ```./code/workhorse```, there are seven R scripts as follows. In ``
 
 ### Acknowledgement
 This work was supported by an NSF award (#1743101).
+
 
