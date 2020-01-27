@@ -16,7 +16,7 @@ A culutre condition is defined by a binary vecotr, representing the presence of 
 * Step1: generate a file that include many configurations to run OED.
   ```
   cd generate_setting
-  Rscript expert_sampling.R
+  Rscript generate_setting.R
   ```
   After running the above commands, a file named ```expert_sampling.csv``` is generated in ```./out_data```. The ```expert_sampling.csv``` specifies the value for these hyper-parameters: random_seed, exploration frequency, adaptive , start size, add, dataset id, noise, iter_num, method. 
 
