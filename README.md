@@ -18,7 +18,7 @@ A culutre condition is defined by a binary vecotr, representing the presence of 
   cd generate_setting
   Rscript generate_setting.R
   ```
-  After running the above commands, a file named ```expert_sampling.csv``` is generated in ```./out_data```. The ```expert_sampling.csv``` specifies the value for these hyper-parameters: random_seed, exploration frequency, adaptive , start size, add, dataset id, noise, iter_num, method. 
+  After running the above commands, a file named ```generate_setting.csv``` is generated in ```./out_data```. The ```generate_setting.csv``` specifies the value for these hyper-parameters: random_seed, exploration frequency, adaptive , start size, add, dataset id, noise, iter_num, method. 
 
 * Step2: Run the simulation on one setting.
 ```
