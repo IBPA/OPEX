@@ -1,3 +1,7 @@
+#' This function takes a simulator object and an index for the next datapoint to select, calculate the distance between each datapoint left in the sampling pool and the next datapoint,
+#' and finally return a array of indexes of all the datapoints selected. How many datapoints are selected are determined by the simulator$setting[['add']].
+#' This function is related to the constraint sampling section of the Supplementary material.
+
 max_dist<- function (simulator,index) {
 
   add = simulator$setting[["add"]]

@@ -1,8 +1,9 @@
+#' All the functions in this script are related to the implementation of a sampling metric used OPEX.
+#' Five sampling metrics are defined in this modules. They are EN_metric, MI_metric, COV_metric, diversity_metric, and tanimoto_metric. To understand the math behind the implementation, see the Method in the Supplemental materials.
+
+
 compute_covariance_h <- function(simulator,set1,set2){
-  #set2 can be pool or benchmark or the merge of these two
-  # set1= as.matrix(set1)
-  # set2 = as.matrix(set2)
-  
+  #This function takes a simulator and two datasets, calucaltes the pairwise covariance between datapoints in set1 and set2. set1 and set2 can be the same. If that is the case, the covariacne is variance.
   d = simulator$model[["numDim"]]
   beta = simulator$model[["beta"]]
   sigma = simulator$model[["sig2"]]
@@ -19,10 +20,9 @@ compute_covariance_h <- function(simulator,set1,set2){
   return(newcov)
 }
 
-# you have three metrics, so you should have three functions to compute the metrics.
-# This is the outline
 predict_testset <- function(simulator,testset, unfold=FALSE) {
-  #unfold is true, return the mean and covariance.
+  # This function predict on the testset. When unfold is true, return the mean and covariance. Otherwise return MAE.
+  
   sigma = simulator$model[["sig2"]]
   inverse=simulator$model$invVarMatrix
   mu=simulator$model[["mu"]]
@@ -43,13 +43,14 @@ predict_testset <- function(simulator,testset, unfold=FALSE) {
 }
 
 EN_metric <- function(simulator){
+  # This function implements the entropy metric, calcuating the entropy of each datapoint in the pool of a simulator object.
   res =  predict_testset(simulator,simulator$pool[, 1:14], unfold=TRUE) 
   var = res$var
   return(var)
 }
 
 compute_MI_denominator <- function(simulator){
-  
+  # This function calculating the denominator part when calculating the mutual information between two datasets.
   d = simulator$model[["numDim"]]
   beta = simulator$model[["beta"]]
   sigma = simulator$model[["sig2"]]
@@ -69,6 +70,7 @@ compute_MI_denominator <- function(simulator){
 }
 
 MI_metric <-function(simulator){
+  # This function implements the mutual information metric, calcualting the mutual information of each datapoint in the pool of a simulator object.
   res =  predict_testset(simulator,simulator$pool[, 1:14], unfold=TRUE) 
   var = res$var
   divisor = compute_MI_denominator(simulator) 
@@ -77,6 +79,7 @@ MI_metric <-function(simulator){
 }
 
 COV_metric <- function(simulator){
+  # This function implements the covariance metric, calcualting the covariance of each datapoint in the pool of a simulator object.
   n_pool = nrow(simulator$pool[, 1:14])
   pool_bench = rbind(simulator$pool, simulator$benchmark)
   n_total = nrow(pool_bench)
@@ -89,20 +92,21 @@ COV_metric <- function(simulator){
 
 
 calculate_div_ <- function(m){
-  # a helper fun for calcualting the imbalance of antibiotic cols or biocide cols
+  # A helper fun for calcualting the imbalance of antibiotic cols or biocide cols
   counts = apply(m, 2, sum)
   total = dim(m)[2]
   return(total*sd(counts/max(counts)))
 }
 
 calculate_div_one_condition_ <- function(m){
-  # a helper fun for calcualting the total imbalance of a group of selected culture conditions
+  # A helper fun for calcualting the total imbalance of a group of selected culture conditions
   div1 = calculate_div_(m[, c(1:10)])
   div2 = calculate_div_(m[, c(11:14)])
   return(div1+div2)
 }
 
 diversity_metric <- function(simulator) {
+  # A function calculating the diversity of a training set.
   con_tr = simulator$train[, c(1:14)]
   con_benchmark = simulator$benchmark[, c(1:14)]
   divs = as.numeric()
@@ -116,6 +120,7 @@ diversity_metric <- function(simulator) {
 
 
 tanimoto_metric <- function(simulator) {
+  #This function implements the metric used by expert sampling, calcuate the distance between an unobserved datapoint and the datapoint in the training set based on tanimoto index.
   dists = simulator$dists
   # extract the biocides and antibiotics in training data
   con_tr = simulator$train[, 1:14]

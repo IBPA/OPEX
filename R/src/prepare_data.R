@@ -1,4 +1,8 @@
+#' This module includes one wrapper function and four functions called by the wrapper. The input of the wrapper function is a Simulator object. The four functions in the wrapper, set up the path for storing the results after running a simulation.
+
+
 set_res_path <- function(simulator) {
+  #' create the directory for storing the results of a simulation based on the setting of the Simulator object.
   cols = names(simulator$setting)[c(1,2)]
   values = unlist(simulator$setting)[c(1,2)]
   folder = paste0(cols,values,sep="",collapse = "-")
@@ -10,23 +14,16 @@ set_res_path <- function(simulator) {
 }
 
 set_res_name <- function(simulator){
-  
+  # create the name of the folder for storing the results based on the setting of the simulator object.
   simulator$res_name = paste("every",simulator$setting["add"],"iter_num",simulator$setting["iter_num"]
                              ,sep = "_")
-}
-
-save_benchmark <- function(simulator) {
-  
-  benchmark_file = paste(simulator$res_name,"_bench.csv",sep="")
-  write.csv(simulator$benchmark,file.path(simulator$res_path,benchmark_file))
 }
 
 
 
 load_data <- function(simulator) {
-  # load and sort the data, the first 14 rows covers all the 
-
-  # gene_id = simulator$setting[["gene_id"]]
+  # load and sort the data, the first 14 rows covers all the antispetics and biocides.
+  gene_id = simulator$setting[["gene_id"]]
   data = read.csv(simulator$input_path, stringsAsFactors=FALSE)
   con_names = data[,1]
   data = data[,-1]
@@ -52,7 +49,7 @@ load_data <- function(simulator) {
 }
 
 split_data <- function(simulator){
-
+  # split the 45 culture conditions into two parts, the starting training set and a pool from which the next dataset is sampled. The pool is also used for evaluating the prediction performance of the GP models.
   start_size = simulator$setting[["start_size"]]
   simulator$train_backup = simulator$data_all[1:start_size,]
   print("number of columns")
@@ -80,6 +77,5 @@ prepare_data <- function(simulator){
   set_res_path(simulator) 
   load_data(simulator)
   split_data(simulator)
-#  save_benchmark(simulator)
 }
 
