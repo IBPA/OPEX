@@ -20,7 +20,6 @@ compute_covariance_h <- function(simulator, set1, set2){
   return(cov_matrix)
 }
 
-
 predict_testset <- function(simulator, testset, unfold=FALSE) {
   # This function predict on the testset. When unfold is true, return the mean and covariance. Otherwise return MAE.
   
@@ -43,13 +42,11 @@ predict_testset <- function(simulator, testset, unfold=FALSE) {
   return(if (unfold) mean_variance else MAE)
 }
 
-
 EN_metric <- function(simulator){
   # This function implements the entropy metric, calcuating the entropy of each datapoint in the pool of a simulator object.
   res <-  predict_testset(simulator, simulator$pool[, 1:NUM_OF_FEATURES], unfold=TRUE) 
   return(res$var)
 }
-
 
 compute_MI_denominator <- function(simulator){
   # This function calculating the denominator part when calculating the mutual information between two datasets.
@@ -69,7 +66,6 @@ compute_MI_denominator <- function(simulator){
   return(divisor)
 }
 
-
 MI_metric <-function(simulator){
   # This function implements the mutual information metric, calcualting the mutual information of each datapoint in the pool of a simulator object.
   res <-  predict_testset(simulator, simulator$pool[, 1:NUM_OF_FEATURES], unfold=TRUE) 
@@ -78,7 +74,6 @@ MI_metric <-function(simulator){
   metric <- var/divisor
   return(metric)
 }
-
 
 COV_metric <- function(simulator){
   # This function implements the covariance metric, calcualting the covariance of each datapoint in the pool of a simulator object.
@@ -91,7 +86,6 @@ COV_metric <- function(simulator){
   return(metric)
   
 }
-
 
 calculate_diversity_ <- function(culture_condition_partial){
   # A helper fun for calcualting the imbalance of antibiotic cols or biocide cols
@@ -119,7 +113,6 @@ diversity_metric <- function(simulator) {
   }
   return(divs)
 }
-
 
 tanimoto_metric <- function(simulator) {
   #This function implements the metric used by expert sampling, calcuate the distance between an unobserved datapoint and the datapoint in the training set based on tanimoto index.

@@ -1,6 +1,5 @@
 # This module has two functions. The update_train_pool function is to update the training set and pool set of a Simulator object after each round of sampling. The update_train_by_prediction is used in adaptive sampling where the truth of the selected datapoints in a batch was replaced by a prediction when selecting the next datapoint in the batch. Note that the prediction will be replaced before sampling datapoints in the next iteration.
 
-
 source("add_noise.R")
 
 update_train_pool <- function (simulator, selected_index) {
@@ -25,7 +24,6 @@ update_train_pool <- function (simulator, selected_index) {
   cat(simulator$res_path)  
 }
 
-
 update_train_by_prediction <- function(simulator, selected_index) {
    # Select the datapoints indexed by selected_index, make a prediction on this selected datapoint, finally add this datapoint to the training set.
    additional_data <- simulator$pool[selected_index, , drop=FALSE]
@@ -34,5 +32,4 @@ update_train_by_prediction <- function(simulator, selected_index) {
    additional_data[length(additional_data)] <- res$mean
    simulator$train <- t(data.frame(t(simulator$train), t(additional_data)))
 }
-
 

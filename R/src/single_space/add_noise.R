@@ -1,7 +1,6 @@
 #' This module defines a function to add white noise to the output column given a dataset stored in a data.frame.
 #' It is only used when testing the method on a synthetic dataset as real dataset already has noise in it.
 
-
 add_noise <- function(noise_level, adddata) {
 
   noises <- rep(0, nrow(adddata))
