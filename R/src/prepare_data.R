@@ -1,6 +1,5 @@
 #' This module includes one wrapper function and four functions called by the wrapper. The input of the wrapper function is a Simulator object. The four functions in the wrapper, set up the path for storing the results after running a simulation.
 
-
 set_res_path <- function(simulator) {
   #' create the directory for storing the results of a simulation based on the setting of the Simulator object.
   cols <- names(simulator$setting)[c(1, 2)]
@@ -13,12 +12,10 @@ set_res_path <- function(simulator) {
   dir.create(simulator$res_path, showWarnings <- FALSE)
 }
 
-
 set_res_name <- function(simulator){
   # create the name of the folder for storing the results based on the setting of the simulator object.
   simulator$res_name <- paste("every", simulator$setting["batch_size"], "iter_num", simulator$setting["iter_num"] , sep <- "_")
 }
-
 
 load_data <- function(simulator) {
   # load and sort the data, the first 14 rows covers all the antispetics and biocides.
@@ -47,7 +44,6 @@ load_data <- function(simulator) {
   simulator$data_all <- data_all[c(selected, left), ]
 }
 
-
 split_data <- function(simulator){
   # split the 45 culture conditions into two parts, the starting training set and a pool from which the next dataset is sampled. The pool is also used for evaluating the prediction performance of the GP models.
   start_size <- simulator$setting[["start_size"]]
@@ -71,7 +67,6 @@ split_data <- function(simulator){
   simulator$benchmark  <- simulator$pool
   
 }
-
 
 prepare_data <- function(simulator){
   set_res_name(simulator)

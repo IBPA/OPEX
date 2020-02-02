@@ -1,10 +1,11 @@
-#' This script generates a set of combinations of the eight variables and save it in a file named by the 1st argument passed from the command line. e.g. to run it, Rscript generate_setting.R expert_sampling
+#' This script generates a set of combinations of the nine variables and save it in a file named by the 1st argument passed from the command line. e.g. to run it, Rscript generate_setting.R expert_sampling
 
-#' The generated file is a tabular file of eight columns, each of which represents a variable. This file is used by the main.R.
+#' The generated file is a tabular file of nine columns, each of which represents a variable. This file is used by the main.R.
 
 #' The mean of each variables are explained as follows:
 #`   random_seed: the seed used when ranomly select the first ten culture conditions.
 #'   exploration: the frequency of switching to random sampling. e.g. exploration=k means in every k+1 iterations, random sampling is used once.
+#'   adaptive: 0 or 1. 1 means adaptive sampling is used. For the explaination of adaptive sampling, see the Supplementary material of our paper. 
 #'   start_size: the number of culture conditions in the training set at the begining of the simulation.
 #'   batch_size: the number of samples added in each iteration.
 #'   dataset_id: the id for the dataset used. Because we tested the method on seven synthetic dataset and one RNA-seq dataset. dataset 1-7 are synthetic and dataset 8 is the RNA-seq.
@@ -19,7 +20,7 @@ setting_file <- args[1]
 setting <- list(
                random_seed=c(51:100), 
                exploration=c(1), 
-               anti_batch=c(0), 
+               adaptive=c(0), 
                start_size=c(15), 
                batch_size=c(1, 3), 
                dataset_id=8, 
