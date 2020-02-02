@@ -45,6 +45,9 @@ The structure of the code is show as follows. The entry to this project is ```ru
 ```
 
 
+### Licence
+See the [LICENSE](./LICENSE) file for license rights and limitations (Apache2.0).
+
 ### Acknowledgement
 This work was supported by an NSF award (#1743101).
 
