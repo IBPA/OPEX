@@ -34,13 +34,13 @@ predict_testset <- function(simulator, testset, unfold = FALSE) {
   inverse <- simulator$model$invVarMatrix
   mu <- simulator$model[["mu"]]
   fitZ <- simulator$model$Z
-  nugget= simulator$model[["nugget"]]
+  nugget <- simulator$model[["nugget"]]
   
   newcov <- compute_covariance_h(simulator, 
                                  set1 = simulator$train,
                                  set2 = testset)
   
-  diag(newcov) = diag(newcov) #+nugget
+  diag(newcov) <- diag(newcov) #+nugget
   mean <- newcov %*% inverse %*% (fitZ - mu) + mu[1]
   variance <- diag(sigma + nugget - newcov %*% inverse %*% t(newcov))
   mean_variance <- list("mean" = mean, "var" = variance)
