@@ -23,7 +23,6 @@ Simulator <- function(file_path_, setting_){
     structure(class="Simulator", environment())
   }
 
-
 source("prepare_data.R")
 
 train_simulator <- function(simulator) {
@@ -32,7 +31,6 @@ train_simulator <- function(simulator) {
     print("training data gene id")
     simulator$model <- mlegp(train[, 2:ncol(train)-1], train[, ncol(train)])
   } 
-
 
 source("update_train_pool.R")
 
@@ -50,7 +48,6 @@ screen_given_a_metric <- function(simulator, metric_fun){
    return (selected_index)
 }
 
-
 source("screen_return_index_helper.R")
 source("max_dist.R")
 
@@ -65,7 +62,7 @@ screen_return_index <- function(simulator) {
                             "DIV"=diversity_metric, 
                             "Tan"=tanimoto_metric)
   
-        if (simulator$setting[["anti_batch"]] == 1) {
+        if (simulator$setting[["adaptive"]] == 1) {
            return(screen_given_a_metric(simulator, metric_fun))
         } else {
            metric <- metric_fun(simulator)
@@ -77,7 +74,6 @@ screen_return_index <- function(simulator) {
         return(index[1:simulator$setting[["batch_size"]]])
     }
 }
-
 
 simulate <- function(simulator){
     # This method is entry of starting a simulation called in the main.R. The simulation keeps running until the number of iterations defined is the setting is reache.
