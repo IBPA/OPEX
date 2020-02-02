@@ -1,40 +1,47 @@
-#' All the functions in this script are related to the implementation of a sampling metric used OPEX.
-#' Five sampling metrics are defined in this modules. They are EN_metric, MI_metric, COV_metric, diversity_metric, and tanimoto_metric. To understand the math behind the implementation, see the Method in the Supplemental materials.
+#' All the functions in this script are related to the implementation of a 
+#' sampling metric used OPEX. Five sampling metrics are defined in this modules.
+#' They are EN_metric, MI_metric, COV_metric, diversity_metric, and 
+#' tanimoto_metric. To understand the math behind the implementation, see the 
+#' method section in the Supplemental materials.
 
 NUM_OF_FEATURES <- 14
 
+#' This function takes a simulator and two datasets, calucaltes the pairwise 
+#' covariance between datapoints in set1 and set2. set1 and set2 can be the 
+#' same. If that is the case, the covariacne is variance.
+
 compute_covariance_h <- function(simulator, set1, set2){
-  #This function takes a simulator and two datasets, calucaltes the pairwise covariance between datapoints in set1 and set2. set1 and set2 can be the same. If that is the case, the covariacne is variance.
   num_features <- simulator$model[["numDim"]]
   beta <- simulator$model[["beta"]]
   sigma <- simulator$model[["sig2"]]
-  cov_matrix <- matrix(nrow=dim(set2)[1], ncol=nrow(set1))
+  cov_matrix <- matrix(nrow = dim(set2)[1], ncol = nrow(set1))
   
-  for ( i in 1:dim(set2)[1]) {
+  for (i in 1:dim(set2)[1]) {
     for (j in 1:nrwo(set1)) {
-      dist <- -sum((set2[i, 1:num_features]-set1[j, 1:num_features])^2*beta)
-      cov_matrix[i, j] <- sigma*exp(dist)
+      dist <- -sum((set2[i, 1:num_features] - set1[j, 1:num_features])^2 * beta)
+      cov_matrix[i, j] <- sigma * exp(dist)
     }
   }
   cat("compute kernel done \n")
   return(cov_matrix)
 }
 
+#' This function predict on the testset. When unfold is true, return the mean 
+#' and covariance. Otherwise return MAE.
 
-predict_testset <- function(simulator, testset, unfold=FALSE) {
-  # This function predict on the testset. When unfold is true, return the mean and covariance. Otherwise return MAE.
-  
+predict_testset <- function(simulator, testset, unfold = FALSE) {
   sigma <- simulator$model[["sig2"]]
   inverse <- simulator$model$invVarMatrix
   mu <- simulator$model[["mu"]]
   fitZ <- simulator$model$Z
   nugget= simulator$model[["nugget"]]
   
-  newcov <- compute_covariance_h(simulator, set1=simulator$train, set2 <- testset)
+  newcov <- compute_covariance_h(simulator, set1 = simulator$train,
+                                 set2 = testset)
   
-  diag(newcov)=diag(newcov) #+nugget
-  mean <- newcov%*%inverse%*%(fitZ - mu)+mu[1]
-  variance <- diag(sigma+nugget-newcov%*%inverse%*%t(newcov))
+  diag(newcov) = diag(newcov) #+nugget
+  mean <- newcov %*% inverse %*% (fitZ - mu) + mu[1]
+  variance <- diag(sigma + nugget - newcov %*% inverse %*% t(newcov))
   mean_variance <- list("mean"=mean, "var"=variance)
   
   truth <- testset[, ncol(testset)]
