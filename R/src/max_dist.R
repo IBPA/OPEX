@@ -8,7 +8,6 @@
 #' supplementary material.
 
 max_dist<- function (simulator, index) {
-
   batch_size <- simulator$setting[["batch_size"]]
   pool <- simulator$pool
   select <- as.numeric()
@@ -22,7 +21,8 @@ max_dist<- function (simulator, index) {
       # Compute the distance of each left datapoint to all the selected
       # datapoints and store the minimum.
       for (s in select) {
-        d <- min(d, sqrt(sum((pool[l, 1:ncol(pool)]- pool[s, 1:ncol(pool)])**2)))
+        d <- min(d, 
+                 sqrt(sum((pool[l, 1:ncol(pool)] - pool[s, 1:ncol(pool)]) ** 2)))
       }
       
       left <- setdiff(left, l) # No matter selected or not, no need to consider 

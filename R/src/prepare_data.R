@@ -39,7 +39,7 @@ load_data <- function(simulator) {
   data <- data[, -1]
   once_rows <- which(apply(data[, 1:14], 1, sum) == 1)
   
-  #You can use a 2-d table to image this.
+  # You can use a 2-d table to image this.
   set.seed(simulator$setting[["random_seed"]]) # Shuffle before splitting.
   antiseptics <- sample(colnames(data)[1:10], 10, replace = FALSE)
   antibiotics <- sample(colnames(data)[11:14], 4, replace = FALSE)
@@ -79,7 +79,7 @@ split_data <- function(simulator){
   if (simulator$setting[["method"]] == "Expert") {
      expert_path <- file.path(dirname(simulator$input_path),
                               paste(simulator$setting[["random_seed"]],
-                                    "_expert.csv", sep=""))
+                                    "_expert.csv", sep = ""))
      expert_file <- read.csv(expert_path)
      expert_order <- expert_file[ (simulator$setting[["start_size"]] + 1):nrow(expert_file), 2]
      print(simulator$pool[, 1:15])

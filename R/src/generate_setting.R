@@ -39,5 +39,6 @@ setting <- list(random_seed = c(51:100),
                 method = "Tan", # Can take values: "Tan", "Random", "MI", and "EN"
                )
 setting <- expand.grid(setting)
-write.csv(setting, paste("../../out_data/", setting_file, sep=""), row.names <- FALSE)
+write.csv(setting, paste("../../out_data/", setting_file, sep = ""), 
+          row.names = FALSE)
 print(nrow(setting))
