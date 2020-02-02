@@ -1,8 +1,8 @@
-#' Generate a set of combinations of the eight variables and save it in a file
+#' Generate a set of combinations of the nine variables and save it in a file
 #' named by the 1st argument passed from the command line.
 #' Example run: "Rscript generate_setting.R expert_sampling"
 
-#' The generated file is a tabular file of eight columns, each of which 
+#' The generated file is a tabular file of nine columns, each of which 
 #' represents a variable. This file is used by the main.R.
 
 #' The mean of each variables are explained as follows:
@@ -30,7 +30,7 @@ args <- commandArgs(trailingOnly = TRUE)
 setting_file <- args[1]
 setting <- list(random_seed = c(51:100),
                 exploration = c(1),
-                anti_batch = c(0),
+                adaptive = c(0),
                 start_size = c(15),
                 batch_size = c(1, 3),
                 dataset_id = 8,
