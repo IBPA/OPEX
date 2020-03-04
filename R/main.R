@@ -10,6 +10,7 @@
 library(mlegp)
 
 set.seed(2018)
+
 main <- function(){
    data_path = "../data"
    output_path = "../output"
