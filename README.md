@@ -10,7 +10,7 @@ The input data is a table, in which the first 14 columns define the culture cond
 
 A culture condition is defined by a binary vector, representing the presence (with 0) or absence (with 1) of 10 biocides and 4 antibiotics: ```Chlorexidine, Phenol, H2O2, Isopropanol, Bezalkonium_chloride, Ethanol, Glutaraldehyde, Percetic_acid, Sodium_hypochlorite, Povidone_iodine, Kanamycin, Rifampicin, Norfloxacin, Ampicillin```.
 
-### How to run
+### How to reproduce
 * Step 1: generate a file that include the settings for running OPEX. The setting file is named after the sampling method. e.g. expert sampling is used in the following example.
   ```
   cd ./R/src
