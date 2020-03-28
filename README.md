@@ -5,6 +5,22 @@ OPEX is an optimal experimental design framework written in R to help biologists
 ### Dependencies
 * [mlegp](https://cran.r-project.org/web/packages/mlegp/index.html)
 
+### Code architecture
+The structure of the code is show as follows. The entry to this project is ```run.sh``` which runs the ```main.R```. The folder, ```src ```  stores the implementation of the functions and classes used in ```main.R```.  There are seven R scripts in ```src```. The script, ```generate_setting.R``` is for generating settings for running a simulation. The script, ```Simulator.R``` defines a class named ```Simulate```, which is the workhorse of running the simulation. Other scripts are helper modules of the ```Simulate``` class. For details of each script, see the document header of each file.
+
+```
+├── main.R
+├── run.sh
+└── src
+    ├── add_noise.R
+    ├── generate_setting.R
+    ├── max_dist.R
+    ├── prepare_data.R
+    ├── screen_index_helper.R
+    ├── Simulator.R
+    └── update_train_pool.R
+```
+
 ### Input data
 The input data is a table, in which the first 14 columns define the culture conditions in each row and the other 1123 columns represents the gene expression profile for each condition. (Genes that did not have a sufficient sequencing depth were excluded). 
 
@@ -28,21 +44,7 @@ Upon completion, a folder named ```expert_sample``` will be created in ```./outp
 
 The result is a csv file named by the value of the hyper-parameters in the setting and contains the order of each culture condition selected by expert sampling.
 
-### Code architecture
-The structure of the code is show as follows. The entry to this project is ```run.sh``` which runs the ```main.R```. The folder, ```src ```  stores the implementation of the functions and classes used in ```main.R```.  There are seven R scripts in ```src```. The script, ```generate_setting.R``` is for generating settings for running a simulation. The script, ```Simulator.R``` defines a class named ```Simulate```, which is the workhorse of running the simulation. Other scripts are helper modules of the ```Simulate``` class. For details of each script, see the document header of each file.
 
-```
-├── main.R
-├── run.sh
-└── src
-    ├── add_noise.R
-    ├── generate_setting.R
-    ├── max_dist.R
-    ├── prepare_data.R
-    ├── screen_index_helper.R
-    ├── Simulator.R
-    └── update_train_pool.R
-```
 
 
 ### Licence
