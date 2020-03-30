@@ -10,6 +10,7 @@ The structure of the code is show as follows. The entry to this project is ```ru
 
 ```
 ├── main.R
+├── run_OPEX_on_your_dataset.R
 ├── run.sh
 └── src
     ├── add_noise.R
@@ -45,6 +46,22 @@ Upon completion, a folder named ```expert_sample``` will be created in ```./outp
 The result is a csv file named by the value of the hyper-parameters in the setting and contains the order of each culture condition selected by expert sampling.
 
 
+
+### How to run OPEX on your own tabular dataset
+
+To OPEX on your own biological problem, two tabular datasets are needed. One is a dataset for training a model. The other is a pool of candidate experiments to run. Both datasets are a matrix. In the training  dataset, the last column is the output and other columns are inputs. Each row denotes one datapoint. The pool dataset has one less column than the training set as the output column is missing.  
+
+The command to run OPEX is as follows:
+
+```Rscript  run_OPEX_on_your_dataset.R <training_path> <pool_path> <batch_size> ```
+
+training_path, pool_path are two strings representing the path of two csv files.
+
+batch_size is an integer.
+
+### Support
+
+If you have any questions about this project, please contact Xiaokang Wang(kanwang@ucdavis.edu)
 
 
 ### Licence

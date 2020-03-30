@@ -4,7 +4,6 @@
 #' tanimoto_metric. To understand the math behind the implementation, see the 
 #' method section in the Supplemental materials.
 
-NUM_OF_FEATURES <- 14
 
 #' This function takes a simulator and two datasets, calucaltes the pairwise 
 #' covariance between datapoints in set1 and set2. set1 and set2 can be the 
@@ -56,7 +55,7 @@ predict_testset <- function(simulator, testset, unfold = FALSE) {
 #' datapoint in the pool of a simulator object.
 
 EN_metric <- function(simulator){
-  res <-  predict_testset(simulator, simulator$pool[, 1:NUM_OF_FEATURES],
+  res <-  predict_testset(simulator, simulator$pool[, 2:ncol(simulator$train)-1],
                           unfold = TRUE) 
   return(res$var)
 }
@@ -71,8 +70,8 @@ compute_MI_denominator <- function(simulator){
   sigma <- simulator$model[["sig2"]]
   nugget <- simulator$model[["nugget"]]
   cov_unob <- compute_covariance_h(simulator,
-                                   simulator$pool[, 1:NUM_OF_FEATURES],
-                                   simulator$pool[, 1:NUM_OF_FEATURES])
+                                   simulator$pool[, 2:ncol(simulator$train)-1],
+                                   simulator$pool[, 2:ncol(simulator$train)-1])
   diag(cov_unob) <- diag(cov_unob) + nugget + sigma
   # Compute denominator for each point in pool
   divisor <- as.numeric()
@@ -94,7 +93,7 @@ compute_MI_denominator <- function(simulator){
 
 MI_metric <-function(simulator){
   res <-  predict_testset(simulator,
-                          simulator$pool[, 1:NUM_OF_FEATURES],
+                          simulator$pool[, 2:ncol(simulator$train)-1],
                           unfold = TRUE) 
   var <- res$var
   divisor <- compute_MI_denominator(simulator) 
@@ -107,7 +106,7 @@ MI_metric <-function(simulator){
 #' of each datapoint in the pool of a simulator object.
 
 COV_metric <- function(simulator){
-  n_pool <- nrow(simulator$pool[, 1:NUM_OF_FEATURES])
+  n_pool <- nrow(simulator$pool[, 2:ncol(simulator$train)-1])
   pool_bench <- rbind(simulator$pool, simulator$benchmark)
   n_total <- nrow(pool_bench)
   cov_unob <- compute_covariance_h(simulator, pool_bench, pool_bench)
@@ -131,16 +130,131 @@ calculate_diversity_ <- function(culture_condition_partial){
 
 calculate_diversity_one_condition_ <- function(culture_condition){
   div1 <- calculate_diversity_(culture_condition[, c(1:10)])
-  div2 <- calculate_diversity_(culture_condition[, c(11:NUM_OF_FEATURES)])
+  div2 <- calculate_diversity_(culture_condition[, c(12:ncol(simulator$train)-1)])
   return(div1+div2)
 }
+
+# GP bagging committee metric
+resample <- function(data, idx_com){
+  selected = 1:15
+  left_rows = 16:nrow(data)
+  num_left = length(left_rows)
+  coms = combinations(num_left, as.integer(0.8*num_left), left_rows, repeats=FALSE)
+  selected = c(selected, coms[idx_com, ])
+  return(selected)
+}
+
+GP_committee <- function(simulator){
+  size_committee = 3
+  means_pred = matrix( , nrow=nrow(simulator$pool), size_committee)
+  for (i in 1:size_committee) {
+    one_simulator = Simulator(file_path,setting_)
+    prepare_data(one_simulator)
+    selected = resample(simulator$train, i)
+    one_simulator$train = simulator$train[selected, ]
+    train_simulator(one_simulator)
+    means_pred[, i] = predict_testset(one_simulator, simulator$pool[, 1:14], unfold=TRUE)$mean
+  }
+  return(rowVars(means_pred))
+  cat("calculating variance is done-------------------")
+}
+
+
+# Diverse committee
+# create a formula for training a linear regression or artifical neural network model
+create_formula <- function(data){
+  f_s = paste(c(colnames(data)[15], " ~ ."), sep="", collapse = "")
+  f <- as.formula(f_s)
+  return(f)
+}
+
+
+linear_regression <- function(data, pool){
+  f = create_formula(data)
+  model = lm(f, data=as.data.frame(data))
+  prediction = predict(model, as.data.frame(pool))
+  return(prediction)
+}
+
+feedforward_nn <- function(data, pool){
+  f = create_formula(data)
+  model = neuralnet(f, data, hidden=c(10), linear.output=T)
+  prediction = compute(model, pool)$net.result
+  return(prediction)
+}
+
+random_forest <- function(data, pool){
+  f = create_formula(data)
+  model = random_forest(f, data)
+  prediction = predict(model, pool)
+  return(prediction)
+}
+
+gaussian_process <- function(data, pool){
+  model = mlegp(data[, 1:14], data[,15])
+  model = mlegp(data[, 1:14], data[,15])
+  prediction = predict(model, pool[, 1:14])
+  return(prediction)
+}
+
+svr_model <- function(data, pool){
+  f = create_formula(data)
+  model = svm(f, data)
+  prediction = predict(model, pool)
+  return(prediction)
+}
+
+# This function materialilze the function used for training a model from the above options.
+materialize_fun <- function(model_type){
+  framework <- switch(model_type,
+                      "LR"=linear_regression,
+                      "FNN"=feedforward_nn,
+                      "RF"=random_forest,
+                      "GP"=gaussian_process,
+                      "SVR"=svr_model)
+  return(framework)
+}
+
+# Train four types of models and calculate the variance in the predictions by the four models
+diverse_committee <- function(simulator){
+  model_types = c("SVR","LR", "GP","FNN")
+  size_committee = length(model_types)
+  means_pred = matrix( , nrow=nrow(simulator$pool), size_committee)
+  for (i in 1:size_committee) {
+    framework <- materialize_fun(model_types[i])
+    prediction <- framework(simulator$train[, c(1:14, simulator$gene_id)], simulator$pool[, 1:14])
+    means_pred[, i] = as.numeric(prediction)
+  }
+  return(rowVars(means_pred))
+  
+}
+
+# d_optimal criterion
+calculate_det_df <- function(df){
+  x = t(as.matrix(df))
+  AA = x %*% t(x)
+  return(det(AA))
+}
+
+d_optimal <- function(siumulator){
+  train = simulator$train[-11, 1:14]
+  pool = simulator$pool[, 1:14]
+  ds = as.numeric()
+  for (i in 1:nrow(pool)){
+    train_one_candiate = rbind(train, pool[i, , drop=FALSE])
+    d = calculate_det_df(train_one_candiate)
+    ds = c(ds, d)
+  }
+  return(ds)
+}
+
 
 #' A function calculating the diversity of the training set after one of the 
 #' datapoint in the benchmark set is added to the training set.
 
 diversity_metric <- function(simulator) {
-  condition_train <- simulator$train[, c(1:NUM_OF_FEATURES)]
-  condition_benchmark <- simulator$benchmark[, c(1:NUM_OF_FEATURES)]
+  condition_train <- simulator$train[, c(2:ncol(simulator$train)-1)]
+  condition_benchmark <- simulator$benchmark[, c(2:ncol(simulator$train)-1)]
   diversity <- as.numeric()
   for (i in 1:dim(condition_benchmark)[1]) {
     next_datapoint <- condition_benchmark[i, , drop = FALSE] `
@@ -158,14 +272,14 @@ diversity_metric <- function(simulator) {
 tanimoto_metric <- function(simulator) {
   dists <- simulator$dists
   # Extract the biocides and antibiotics in training data.
-  condition_train <- simulator$train[, 1:NUM_OF_FEATURES]
+  condition_train <- simulator$train[, 2:ncol(simulator$train)-1]
   names <- colnames(condition_train)
   indexes <- apply(condition_train[1:10, ] == 1, 1, which)
   biocides_tr <- names[indexes[1, ]]
   antibiotics_tr <- names[indexes[2, ]]
   
   # Extract the biocides and antibiotics in the left data.
-  condition_test <- simulator$benchmark[, 1:NUM_OF_FEATURES, drop = FALSE]
+  condition_test <- simulator$benchmark[, 2:ncol(simulator$train)-1, drop = FALSE]
   names <- colnames(condition_test)
   indexes <- apply(condition_test == 1, 1, which)
   biocides <- names[indexes[1, ]]

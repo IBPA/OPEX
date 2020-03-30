@@ -73,7 +73,6 @@ split_data <- function(simulator){
   print("starting data for training")
   print(simulator$train_backup[, 1:15])
   simulator$train <- simulator$train_backup
-  print("data for pool")
   simulator$pool  <- simulator$data_all[(start_size + 1):nrow(simulator$data_all), ]
   
   if (simulator$setting[["method"]] == "Expert") {

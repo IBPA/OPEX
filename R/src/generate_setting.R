@@ -36,7 +36,8 @@ setting <- list(random_seed = c(51:100),
                 dataset_id = 8,
                 noise = 0,
                 iter_num = 30,
-                method = "Tan", # Can take values: "Tan", "Random", "MI", and "EN"
+                method = "Tan", # Can take values: "Tan", "Random", "MI", and "EN",
+                num_of_features = 14
                )
 setting <- expand.grid(setting)
 write.csv(setting, paste("../../out_data/", setting_file, sep = ""), 

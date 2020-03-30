@@ -43,18 +43,18 @@ main <- function(){
                     "data" = s[["data"]],
                     "noise" = s[["noise"]],
                     "iter_num" = s[["iter_num"]],
-                    "method" = s[["method"]])
+                    "method" = s[["method"]],
+                    "num_of_features"=s[["num_of_features"]])
    
    # Create the path for the input data.
    file_path =  file.path(data_path, paste(setting_[["data"]], ".csv",
                                            sep = ""))
    
    # Create an object of the Simulator class.
-   simulator = Simulator(file_path,setting_)
+   simulator = Simulator(file_path, setting_)
    
    # Load the support data for expert sampling.
-   dists = read.csv(file.path(data_path, "pairwise_similarity_bio.csv"), 
-                    row.names=1)
+   dists = read.csv(file.path(data_path, "pairwise_similarity_bio.csv"), row.names=1)
    simulator$dists = dists
    
    # Run the simulator.

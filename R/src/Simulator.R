@@ -7,7 +7,7 @@ library(mlegp)
 #' and setting__, a list representing a setting for running this simulation.
 #' The data of a Simulator object is updated in simulation.
 
-Simulator <- function(file_path_, setting_){
+Simulator <- function(file_path_, setting_=NA){
     setting <- setting_
     input_path <- file_path_
     dists <- NA 
@@ -34,7 +34,8 @@ source("prepare_data.R")
 #' training dataset of a Simulator object.
 
 train_simulator <- function(simulator) {
-    train <- simulator$train[, c(1:14, simulator$gene_id)]
+    num_of_features = dim(simulator$train)[2] - 1
+    train <- simulator$train[, c(1:num_of_features, simulator$gene_id)]
     print("training data gene id")
     simulator$model <- mlegp(train[, 2:ncol(train) - 1], train[, ncol(train)])
   } 
@@ -134,4 +135,30 @@ simulate <- function(simulator){
        print("------------dimension of the training set")
        print(dim(simulator$train))
    }
+}
+
+
+# The following code is for running OPEX on a tabular dataset, in which the last column is an output and other columns
+# are features.
+
+load_data <- function(simulator, training_data_path, pool_path){
+  simulator$train <- read.csv(training_data_path)
+  simulator$pool <- read.csv(pool_path)
+}
+
+source("update_train_pool.R")
+select_next_batch <-function(simulator, batch_size){
+  # train a GP modeling using the training data and select one from the pool at each iteration
+  # When selecting the next one in a batch, use the predicted value temporarily as 
+    # the truth of the selected datapoints in the batch
+  idxes = as.numeric()
+  for (i in 1:batch_size){
+    data <- simulator$train
+    simulator$model <- mlegp(data[, 2:ncol(data)-1], data[, ncol(data)])
+    idx = EN_metric(simulator)
+    idxes = c(idxes, idx)
+    update_train_by_prediction(simulator, idx)
+  }
+  print("the index of the datapoint selected from the pool")
+  print(idxes)
 }
