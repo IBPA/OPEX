@@ -1,7 +1,7 @@
-#' Reproduce Figure 2C in the manuscript
+#' Reproduce Supplementary Figure 9B
 #' Input: "./data/simulation_runs_prediction_MAEs.csv"
-#' Output: "./figures/figure_2C.pdf"
-#'
+#' Output: "./figures/supplementary_figure_9B.pdf"
+#'          
 
 library(dplyr)
 library(ggplot2)
@@ -50,7 +50,7 @@ get_summary <- function(df_Diff, method){
 colors_assigned <- c("OED"="#3bb273","replicate"="#4d9de0" ,"Replicate"="#4d9de0", 
                      "Random"="#e1bc29", "Expert"="#e15554", "Imbalance" = "#000000",
                      "-1"="#e15554", "1"="#4d9de0")
-OED_Method_Name = "MI"
+OED_Method_Name = "EN"
 num_iter <- 30
 set.seed(1)
 percent_format(digits = 0)
@@ -107,4 +107,4 @@ print(gPlot_p2)
 # 6) Save
 gComb <- plot_grid(gPlot_p1, gPlot_p2, ncol=1, align="v", rel_heights = c(2,1))
 print(gComb)
-ggsave("./figures/figure_2C.pdf", gComb, dpi = 600, width=6.2 , height =  3.5)
+ggsave("./figures/supplementary_figure_9B.pdf", gComb, dpi = 600, width=6.2 , height =  3.5)

@@ -1,4 +1,4 @@
-#' gen_supplementary_figure_9A.R
+#' Reproduce Supplementary Figure 9A
 #' Inputs: "./data/simulation_runs_prediction_MAEs.csv"
 #'         "./data/simulation_runs_iterations_prediction_MAE_LT_144_EN.csv"
 #' Output: "./figures/supplementary_figure_9A.pdf"
