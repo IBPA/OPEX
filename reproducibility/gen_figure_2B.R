@@ -1,6 +1,6 @@
 #' Reproduce Figure 2B in the manuscript
 #' Inputs: "./data/simulation_runs_prediction_MAEs.csv"
-#'         "./data/simulation_runs_iteratinos_MAE_LT_147_MI.csv"
+#'         "./data/simulation_runs_iterations_prediction_MAE_LT_147_MI.csv"
 #' Output: "./figures/figure_2B.pdf"
 #'          
 
@@ -70,7 +70,7 @@ df_summ_Expert <- get_summary(df[df$method == "Expert", c(1:num_iter)], "Expert"
 df_summ_Replicate <- get_summary(df[df$method == "replicate", c(1:num_iter)], "Replicate")
 df_summ <- rbind(df_summ_OED, df_summ_Expert, df_summ_Replicate, df_summ_Random)
 
-# 3) Plot the summary in figure_2B_p1.pdf
+# 3) Plot the summary (main part of the figure)
 gPlot_p1 <- ggplot(df_summ, aes(x=iteration, y=mean, ymin=l, ymax=h, fill=method, colour=method))+
   geom_ribbon(alpha=0.3, colour = NA)+
   geom_line()+
@@ -104,7 +104,7 @@ gPlot_p2 <- ggplot(df_max_iter, aes(y=MAE, x=method, fill=method))+
 print(gPlot_p2)
 
 # 6) Find number of iterations necessary to achive error of OED at iteration 15 (MAE=0.147)
-df_iter <- read.table(file.path("./data/simulation_runs_iteratinos_MAE_LT_147_MI.csv"), sep = ",", header = TRUE )
+df_iter <- read.table(file.path("./data/simulation_runs_iterations_prediction_MAE_LT_147_MI.csv"), sep = ",", header = TRUE )
 df_iter$Replicate <- 1
 df_iter_m <- melt(df_iter, measure.vars = colnames(df_iter), value.name = "Iteration", variable.name = "Method")
 df_iter_m$Method <- factor(df_iter_m$Method, levels=c("Replicate", "OED", "Random", "Expert"))
