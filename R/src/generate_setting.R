@@ -28,15 +28,15 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 setting_file <- args[1]
-setting <- list(random_seed = c(51:100),
-                exploration = c(1),
+setting <- list(random_seed = c(1:50),
+                exploration = c(1, 2, 3),
                 adaptive = c(0),
                 start_size = c(15),
                 batch_size = c(1, 3),
                 dataset_id = 8,
                 noise = 0,
                 iter_num = 30,
-                method = "Tan", # Can take values: "Tan", "Random", "MI", and "EN",
+                method = ("Tan",  "Random", "MI", "EN"),
                 num_of_features = 14
                )
 setting <- expand.grid(setting)
