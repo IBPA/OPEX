@@ -74,7 +74,7 @@ batch_size is an integer.
 
 ### Support
 
-If you have any questions about this project, please contact Xiaokang Wang(kanwang@ucdavis.edu)
+If you have any questions about this project, please contact us at tagkopouloslab@ucdavis.edu
 
 
 ### Licence
